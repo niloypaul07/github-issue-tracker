@@ -8,12 +8,18 @@ const closedTab = document.getElementById("closedTab");
 const searchInput = document.querySelector(".search-input");
 const searchButton = document.querySelector(".search-button");
 
-let allIssues = [];
+const loader = document.querySelector(".loading").parentElement;
 
-// fetch all issues
+let allIsisues = [];
+
 async function loadIssues() {
+
+  loader.style.display = "flex";
+
   const res = await fetch("https://phi-lab-server.vercel.app/api/v1/lab/issues");
   const data = await res.json();
+
+  loader.style.display = "none";
 
   allIssues = data.data || data;
   renderIssues(allIssues);
@@ -27,11 +33,15 @@ async function searchIssues(text) {
     return;
   }
 
+  loader.style.display = "flex";
+
   const res = await fetch(
     `https://phi-lab-server.vercel.app/api/v1/lab/issues/search?q=${text}`
   );
 
   const data = await res.json();
+
+  loader.style.display = "none";
 
   const results = data.data || data;
 
@@ -39,11 +49,13 @@ async function searchIssues(text) {
 }
 
 function renderIssues(issues) {
+
   allCardContainer.innerHTML = "";
 
   issueCount.textContent = issues.length;
 
   issues.forEach((issue) => {
+
     const status = issue.status?.toLowerCase();
     const priority = issue.priority?.toLowerCase();
 
