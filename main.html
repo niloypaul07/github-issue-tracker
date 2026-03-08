@@ -139,6 +139,54 @@ class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3"
 </section>
 
 
+<!-- modal section -->
+
+<!-- Open the modal using ID.showModal() method -->
+<button class="btn" onclick="my_modal_5.showModal()">open modal</button>
+<dialog id="my_modal_5" class="modal modal-bottom sm:modal-middle">
+  <div class="modal-box">
+    <h1 class="font-bold text-[24px] color-[#1F2937]">Fix broken image uploads</h1>
+    <div class="my-3">
+
+        <span class="bg-[#00A96E] p-2 rounded-full text-white text-[12px]">opened</span>  .  <span class="text-[#64748B] text-[12px]">Opened by Fahim Ahmed</span> . 
+        <span class="text-[#64748B] text-[12px]">22/02/2026</span>
+
+    </div>
+    <div class="flex gap-5 items-center my-5>
+
+          
+             <p class="text-[10px] font-medium bg-[#FEECEC] px-2 rounded-full py-1 text-[#EF4444]">
+  <img src="./assets/BugDroid.png">
+  Bug
+</p>
+
+            <p class="text-[10px] font-medium flex items-center gap-1 bg-[#FDE68A] px-2 rounded-full py-1 text-[#D97706]">
+              <i class="fa-solid fa-life-ring"></i>
+              help wanted
+              </p>
+          
+
+        </div>
+
+    <p class="text-[16px] font-medium text-[#64748B] ">The navigation menu doesn't collapse properly on mobile devices. Need to fix the responsive behavior.
+        </p>
+
+        <div class=" bg-[#F8FAFC]">
+
+        </div>
+
+
+
+    <div class="modal-action">
+      <form method="dialog">
+        <!-- if there is a button in form, it will close the modal -->
+        <button class="btn bg-[#4A00FF] text-white">Close</button>
+      </form>
+    </div>
+  </div>
+</dialog>
+
+
 <script src="./scripts/main.js"></script>
 
 </body>
