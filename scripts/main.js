@@ -5,15 +5,37 @@ const allTab = document.getElementById("allTab");
 const openTab = document.getElementById("openTab");
 const closedTab = document.getElementById("closedTab");
 
+const searchInput = document.querySelector(".search-input");
+const searchButton = document.querySelector(".search-button");
+
 let allIssues = [];
 
-// fetch issues
+// fetch all issues
 async function loadIssues() {
   const res = await fetch("https://phi-lab-server.vercel.app/api/v1/lab/issues");
   const data = await res.json();
 
   allIssues = data.data || data;
   renderIssues(allIssues);
+}
+
+// search issues
+async function searchIssues(text) {
+
+  if (!text) {
+    renderIssues(allIssues);
+    return;
+  }
+
+  const res = await fetch(
+    `https://phi-lab-server.vercel.app/api/v1/lab/issues/search?q=${text}`
+  );
+
+  const data = await res.json();
+
+  const results = data.data || data;
+
+  renderIssues(results);
 }
 
 function renderIssues(issues) {
@@ -25,18 +47,14 @@ function renderIssues(issues) {
     const status = issue.status?.toLowerCase();
     const priority = issue.priority?.toLowerCase();
 
-    // status style
     let borderColor = "#00A96E";
     let statusIcon = "./assets/Open-Status.png";
 
-    
+    if (status === "closed") {
+      borderColor = "#A855F7";
+      statusIcon = "./assets/Closed-Status.png";
+    }
 
-if (status === "closed") {
-  borderColor = "#A855F7";
-  statusIcon = "./assets/Closed-Status.png";
-}
-
-    // priority style
     let priorityBg = "#FEECEC";
     let priorityText = "#EF4444";
 
@@ -50,7 +68,6 @@ if (status === "closed") {
       priorityText = "#9CA3AF";
     }
 
-    // labels
     const labels = issue.labels || [];
 
     const label1 = labels[0] || "";
@@ -65,7 +82,7 @@ if (status === "closed") {
 
     card.innerHTML = `
         <div class="flex justify-between items-center">
-          <img class="h-7" src="${statusIcon}" alt="">
+          <img class="h-7" src="${statusIcon}">
           <p class="font-bold px-4 rounded-full py-1" 
           style="background:${priorityBg}; color:${priorityText}">
           ${priority.toUpperCase()}
@@ -148,5 +165,19 @@ closedTab.addEventListener("click", () => {
   renderIssues(closedIssues);
 });
 
-// load
+// search button click
+searchButton.addEventListener("click", () => {
+  const text = searchInput.value.trim();
+  searchIssues(text);
+});
+
+// search enter press
+searchInput.addEventListener("keypress", (e) => {
+  if (e.key === "Enter") {
+    const text = searchInput.value.trim();
+    searchIssues(text);
+  }
+});
+
+// load issues
 loadIssues();
