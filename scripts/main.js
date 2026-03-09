@@ -10,8 +10,98 @@ const searchButton = document.querySelector(".search-button");
 
 const loader = document.querySelector(".loading").parentElement;
 
-let allIsisues = [];
+let allIssues = [];
 
+// modal section
+function openModal(issue) {
+
+  const modal = document.getElementById("my_modal_5");
+
+  document.getElementById("modal-title").textContent = issue.title;
+
+  document.getElementById("modal-description").textContent =
+    issue.description || "";
+
+  document.getElementById("modal-author").textContent =
+    "Opened by " + (issue.author || "unknown");
+
+  document.getElementById("modal-date").textContent =
+    new Date(issue.createdAt).toLocaleDateString();
+
+  document.getElementById("modal-assignee").textContent =
+    issue.assignee || issue.author || "unknown";
+
+
+  // status
+  const statusEl = document.getElementById("modal-status");
+
+  statusEl.textContent = issue.status;
+
+  if (issue.status.toLowerCase() === "open") {
+    statusEl.className =
+      "bg-[#00A96E] p-2 rounded-full text-white text-[12px]";
+  } else {
+    statusEl.className =
+      "bg-[#A855F7] p-2 rounded-full text-white text-[12px]";
+  }
+
+
+  // priority
+  const priorityEl = document.getElementById("modal-priority");
+
+  priorityEl.textContent = issue.priority.toUpperCase();
+
+  if (issue.priority.toLowerCase() === "high") {
+    priorityEl.style.background = "#EF4444";
+  }
+
+  if (issue.priority.toLowerCase() === "medium") {
+    priorityEl.style.background = "#F59E0B";
+  }
+
+  if (issue.priority.toLowerCase() === "low") {
+    priorityEl.style.background = "#9CA3AF";
+  }
+
+
+  // labels
+  const labelsContainer = document.getElementById("modal-labels");
+
+  labelsContainer.innerHTML = "";
+
+  const labels = issue.labels || [];
+
+  labels.forEach((label) => {
+
+    let labelHtml = "";
+
+    if (label.toLowerCase() === "bug") {
+
+      labelHtml = `
+      <p class="text-[10px] font-medium flex items-center gap-1 bg-[#FEECEC] px-2 rounded-full py-1 text-[#EF4444]">
+      <img src="./assets/BugDroid.png">
+      ${label.toUpperCase()}
+      </p>
+      `;
+
+    } else {
+
+      labelHtml = `
+      <p class="text-[10px] font-medium flex items-center gap-1 bg-[#FDE68A] px-2 rounded-full py-1 text-[#D97706]">
+      <i class="fa-solid fa-life-ring"></i>
+      ${label.toUpperCase()}
+      </p>
+      `;
+    }
+
+    labelsContainer.innerHTML += labelHtml;
+  });
+
+  modal.showModal();
+}
+
+
+// load issues
 async function loadIssues() {
 
   loader.style.display = "flex";
@@ -22,8 +112,10 @@ async function loadIssues() {
   loader.style.display = "none";
 
   allIssues = data.data || data;
+
   renderIssues(allIssues);
 }
+
 
 // search issues
 async function searchIssues(text) {
@@ -48,6 +140,8 @@ async function searchIssues(text) {
   renderIssues(results);
 }
 
+
+// render cards
 function renderIssues(issues) {
 
   allCardContainer.innerHTML = "";
@@ -88,7 +182,7 @@ function renderIssues(issues) {
     const card = document.createElement("div");
 
     card.className =
-      "shadow-md p-3 rounded-lg space-y-4 border-t-4 hover:shadow-lg transition";
+      "shadow-md p-3 rounded-lg space-y-4 border-t-4 hover:shadow-lg transition cursor-pointer";
 
     card.style.borderTopColor = borderColor;
 
@@ -137,27 +231,43 @@ function renderIssues(issues) {
         </div>
     `;
 
+    // open modal when card clicked
+    card.addEventListener("click", () => {
+      openModal(issue);
+    });
+
     allCardContainer.appendChild(card);
   });
 }
 
-// tab active style
+
+// tab style
 function setActiveTab(activeBtn) {
+
   document.querySelectorAll(".tab-btn").forEach((btn) => {
+
     btn.classList.remove("bg-[#4A00FF]", "text-white");
+
     btn.classList.add("border", "border-gray-300");
+
   });
 
   activeBtn.classList.add("bg-[#4A00FF]", "text-white");
 }
 
+
 // tab events
 allTab.addEventListener("click", () => {
+
   setActiveTab(allTab);
+
   renderIssues(allIssues);
+
 });
 
+
 openTab.addEventListener("click", () => {
+
   setActiveTab(openTab);
 
   const openIssues = allIssues.filter(
@@ -165,9 +275,12 @@ openTab.addEventListener("click", () => {
   );
 
   renderIssues(openIssues);
+
 });
 
+
 closedTab.addEventListener("click", () => {
+
   setActiveTab(closedTab);
 
   const closedIssues = allIssues.filter(
@@ -175,21 +288,32 @@ closedTab.addEventListener("click", () => {
   );
 
   renderIssues(closedIssues);
+
 });
 
-// search button click
+
+// search button
 searchButton.addEventListener("click", () => {
+
   const text = searchInput.value.trim();
+
   searchIssues(text);
+
 });
 
-// search enter press
+
+// search enter
 searchInput.addEventListener("keypress", (e) => {
+
   if (e.key === "Enter") {
+
     const text = searchInput.value.trim();
+
     searchIssues(text);
+
   }
+
 });
 
-// load issues
+
 loadIssues();
